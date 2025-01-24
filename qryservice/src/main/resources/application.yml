@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9092
+      group-id: client-event-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring:
+          json:
+            trusted:
+              packages: com.rober.dto, com.rober.model
+            # Es posible que también necesites agregar la configuración de la clase de deserialización explícita:
+            deserializer-class: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+    listener:
+      missing-topics-fatal: false
