@@ -5,7 +5,7 @@ import com.rober.model.Account;
 
 public interface IAccountService {
 
-    Account findByIdAccount(String idAccount);
+    Account findByIdAccount(Integer idAccount);
 
     void processAccountEvent(AccountEvents accountEvents);
 

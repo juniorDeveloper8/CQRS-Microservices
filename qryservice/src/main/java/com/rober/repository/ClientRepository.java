@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ClientRepository extends CrudRepository<Client, String> {
+public interface ClientRepository extends CrudRepository<Client, Integer> {
 
-    Client findByIdClient(String idClient);
+    Client findByIdClient(Integer idClient);
 }

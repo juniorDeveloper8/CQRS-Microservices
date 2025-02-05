@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Random;
+import java.util.UUID;
 
 @Service
 public class ClientServiceImpl implements IClientService {
@@ -93,6 +94,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
     private Client saveClient(ClientDTO clientDTO) {
+
         Client client = new Client();
         client.setNombre(clientDTO.getNombre());
         client.setApellido(clientDTO.getApellido());

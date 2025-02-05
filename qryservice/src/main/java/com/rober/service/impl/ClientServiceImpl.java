@@ -16,7 +16,7 @@ public class ClientServiceImpl implements IClientService {
     private ClientRepository repository;
 
     @Override
-    public Client findByIdClient(String idClient) {
+    public Client findByIdClient(Integer idClient) {
         return repository.findByIdClient(idClient);
     }
 

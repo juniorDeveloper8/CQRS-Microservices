@@ -5,7 +5,7 @@ import com.rober.model.Client;
 
 public interface IClientService {
 
-    Client findByIdClient(String idClient);
+    Client findByIdClient(Integer idClient);
 
     void processClientsEvent(ClientEvent clientEvent);
 

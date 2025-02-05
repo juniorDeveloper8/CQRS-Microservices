@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/listener")
 public class AppController {
@@ -22,25 +24,26 @@ public class AppController {
     private AccountServiceImpl accountService;
 
     @GetMapping("/client/{idClient}")
-    public ResponseEntity<Client> findByIdClient(@PathVariable String idClient) {
-        // Verificar si idClient está en blanco o es nulo
-        if (idClient == null || idClient.trim().isEmpty()) {
+    public ResponseEntity<Client> findByIdClient(@PathVariable Integer idClient) {
+        if (idClient == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(null);
         }
 
-        // Intentar obtener el cliente por id
         Client client = clientService.findByIdClient(idClient);
+
         if (client == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  // Cliente no encontrado
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(null);
         }
 
         return ResponseEntity.ok(client);
+
     }
 
 
     @GetMapping("/account/{idAccount}")
-    public Account findByIdAccount(@PathVariable String idAccount) {
+    public Account findByIdAccount(@PathVariable Integer idAccount) {
         return accountService.findByIdAccount(idAccount);
     }
 

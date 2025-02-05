@@ -14,7 +14,7 @@ import java.util.Date;
 public class Account {
 
     @Id
-    private String idAccount;
+    private Integer idAccount;
 
     private BigDecimal saldo;
     private BigDecimal deuda;

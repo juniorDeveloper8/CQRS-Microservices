@@ -15,9 +15,7 @@ import java.util.Date;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_client", unique = true, nullable = false, length = 200)
-    private String idClient;
+    private Integer idClient;
     private String nombre;
     private String apellido;
     @Enumerated(EnumType.STRING)

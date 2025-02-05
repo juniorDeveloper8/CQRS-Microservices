@@ -18,7 +18,7 @@ public class AccountServiceImpl implements IAccountService {
     private AccountRepository repository;
 
     @Override
-    public Account findByIdAccount(String idAccount) {
+    public Account findByIdAccount(Integer idAccount) {
         return repository.findByIdAccount(idAccount);
     }
 
