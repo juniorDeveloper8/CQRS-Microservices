@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClientEvent {
     private String eventType;
-    private ClientDTO clientes;
+    private ClientDTO client;
 }

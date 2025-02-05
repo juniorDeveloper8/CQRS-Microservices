@@ -41,40 +41,86 @@ public class ClientServiceImpl implements IClientService {
     @Override
     public ClientDTO save(ClientDTO clientDTO) {
         try {
-            Random randomNumbers = new Random();
+//            Random randomNumbers = new Random();
+//
+//            Client client = new Client();
+//            client.setNombre(clientDTO.getNombre());
+//            client.setApellido(clientDTO.getApellido());
+//            client.setGenero(clientDTO.getGenero());
+//            client.setDireccion(clientDTO.getDireccion());
+//            client.setTelefono(clientDTO.getTelefono());
+//            client.setFecRegistro(clientDTO.getFecRegistro());
+//
+//            Client savedClient = clientRepository.save(client);
+//            ClientDTO saveClientDTO = clientsMapper.toDTO(savedClient);
+//
+//            // cuentas
+//
+//            Account account = new Account();
+//            account.setClient(savedClient);
+//            account.setSaldo(new BigDecimal(0L));
+//            account.setDeuda(new BigDecimal(0L));
+//            account.setFechaCorte(savedClient.getFecRegistro());
+//            account.setLimitCredit(new BigDecimal(1000 + randomNumbers.nextLong(9001)));
+//            account.setStatus(true);
+//
+//            Account savedAccount = accountRepository.save(account);
+//            AccountDTO savedAccountDTO = accountMapper.toDTO(savedAccount);
+//
+//            kafkaTemplate.send("client-event-topic", new ClientEvent("CreateCliente", saveClientDTO));
+//            kafkaTemplate.send("account-event-topic", new AccountEvents("CreateCuenta", savedAccountDTO));
+//
+//            return saveClientDTO;
+//
+//        } catch (Exception e) {
+//            throw new ClientException("Error en Guardar Cliente metodo save: " + e.getMessage());
+//        }
 
-            Client client = new Client();
-            client.setNombre(clientDTO.getNombre());
-            client.setApellido(clientDTO.getApellido());
-            client.setGenero(clientDTO.getGenero());
-            client.setDireccion(clientDTO.getDireccion());
-            client.setTelefono(clientDTO.getTelefono());
-            client.setFecRegistro(clientDTO.getFecRegistro());
+            // Paso 1: Crear y guardar el cliente
+            Client savedClient = saveClient(clientDTO);
 
-            Client savedClient = clientRepository.save(client);
-            ClientDTO saveClientDTO = clientsMapper.toDTO(savedClient);
+            // Paso 2: Crear y guardar la cuenta del cliente
+            AccountDTO savedAccountDTO = saveAccount(savedClient);
 
-            // cuentas
+            // Paso 3: Enviar eventos a Kafka
+            sendKafkaEvents(clientDTO, savedAccountDTO);
 
-            Account account = new Account();
-            account.setClient(savedClient);
-            account.setSaldo(new BigDecimal(0L));
-            account.setDeuda(new BigDecimal(0L));
-            account.setFechaCorte(savedClient.getFecRegistro());
-            account.setLimitCredit(new BigDecimal(1000 + randomNumbers.nextLong(9001)));
-            account.setStatus(true);
-
-            Account savedAccount = accountRepository.save(account);
-            AccountDTO savedAccountDTO = accountMapper.toDTO(savedAccount);
-
-            kafkaTemplate.send("client-event-topic", new ClientEvent("CreateCliente", saveClientDTO));
-            kafkaTemplate.send("account-event-topic", new AccountEvents("CreateCuenta", savedAccountDTO));
-
-            return saveClientDTO;
-
+            // Retornar el DTO del cliente guardado
+            return clientsMapper.toDTO(savedClient);
         } catch (Exception e) {
-            throw new ClientException("Error en Guardar Cliente metodo save: " + e.getMessage());
+            throw new ClientException("Error al guardar el cliente: " + e.getMessage(), e);
         }
+    }
+
+    private Client saveClient(ClientDTO clientDTO) {
+        Client client = new Client();
+        client.setNombre(clientDTO.getNombre());
+        client.setApellido(clientDTO.getApellido());
+        client.setGenero(clientDTO.getGenero());
+        client.setDireccion(clientDTO.getDireccion());
+        client.setTelefono(clientDTO.getTelefono());
+        client.setFecRegistro(clientDTO.getFecRegistro());
+
+        return clientRepository.save(client);
+    }
+
+    private AccountDTO saveAccount(Client savedClient) {
+        Random randomNumbers = new Random();
+        Account account = new Account();
+        account.setClient(savedClient);
+        account.setSaldo(BigDecimal.ZERO);
+        account.setDeuda(BigDecimal.ZERO);
+        account.setFechaCorte(savedClient.getFecRegistro());
+        account.setLimitCredit(new BigDecimal(1000 + randomNumbers.nextLong(9001)));
+        account.setStatus(true);
+
+        Account savedAccount = accountRepository.save(account);
+        return accountMapper.toDTO(savedAccount);
+    }
+
+    private void sendKafkaEvents(ClientDTO clientDTO, AccountDTO savedAccountDTO) {
+        kafkaTemplate.send("account-event-topic", new AccountEvents("CreateCuenta", savedAccountDTO));
+        kafkaTemplate.send("client-event-topic", new ClientEvent("CreateCliente", clientDTO));
     }
 
     @Override
@@ -105,7 +151,7 @@ public class ClientServiceImpl implements IClientService {
                 kafkaTemplate.send("client-event-topic", new ClientEvent("DeleteCliente", new ClientDTO(idClient)));
             }
             return "El cliende con id: " + idClient + " fue dado de baja correctamente! ";
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ClientException("Error al eliminar el cliente: " + e.getMessage());
         }
     }
