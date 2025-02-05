@@ -13,14 +13,14 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 public class AccountDTO {
-    private String idAccount;
+    private Integer idAccount;
     private BigDecimal saldo;
     private BigDecimal deuda;
     private BigDecimal limitCredit;
     private Date fechaCorte;
     private Boolean status;
 
-    public AccountDTO(String idAccount) {
+    public AccountDTO(Integer idAccount) {
         this.idAccount = idAccount;
     }
 }

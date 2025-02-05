@@ -29,7 +29,7 @@ public class AccountServiceImpl implements IAccountService {
     private KafkaTemplate<String, Object> kafkaTemplate;
 
     @Override
-    public AccountDTO update(String idAccount, AccountDTO accountDTO) {
+    public AccountDTO update(Integer idAccount, AccountDTO accountDTO) {
         try {
             return accountRepository.findById(idAccount)
                     .map(account -> {
@@ -49,11 +49,11 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public String delete(String idAccount) {
+    public String delete(Integer idAccount) {
         try {
             return accountRepository.findById(idAccount)
                     .map(account -> {
-                        String idClient = account.getClient().getIdClient();
+                        Integer idClient = account.getClient().getIdClient();
                         accountRepository.deleteById(idAccount);
                         clientRepository.deleteById(idClient);
                         kafkaTemplate.send("account-event-topic", new AccountEvents("DeleteCuenta", new AccountDTO(idAccount)));

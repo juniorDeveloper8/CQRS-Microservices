@@ -126,7 +126,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
-    public ClientDTO update(String idClient, ClientDTO clientDTO) {
+    public ClientDTO update(Integer idClient, ClientDTO clientDTO) {
         try {
             return clientRepository.findById(idClient)
                     .map(client -> {
@@ -146,7 +146,7 @@ public class ClientServiceImpl implements IClientService {
     }
 
     @Override
-    public String delete(String idClient) {
+    public String delete(Integer idClient) {
         try {
             if (clientRepository.existsById(idClient)) {
                 clientRepository.deleteById(idClient);

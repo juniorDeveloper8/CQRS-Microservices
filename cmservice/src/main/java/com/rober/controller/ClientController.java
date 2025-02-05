@@ -18,12 +18,12 @@ public class ClientController {
     }
 
     @PatchMapping("/{idClient}")
-    public ClientDTO updateClient(@PathVariable String idClient, @RequestBody ClientDTO clientDTO) {
+    public ClientDTO updateClient(@PathVariable Integer idClient, @RequestBody ClientDTO clientDTO) {
         return service.update(idClient, clientDTO);
     }
 
     @DeleteMapping("/{idClient}")
-    public String deleteClient(@PathVariable String idClient) {
+    public String deleteClient(@PathVariable Integer idClient) {
         return service.delete(idClient);
     }
 }

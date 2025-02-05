@@ -14,7 +14,7 @@ import java.util.Date;
 @Builder
 public class ClientDTO {
 
-    private String idClient;
+    private Integer idClient;
     private String nombre;
     private String apellido;
     private Gender genero;
@@ -22,7 +22,7 @@ public class ClientDTO {
     private String telefono;
     private Date fecRegistro;
 
-    public ClientDTO(String idClient) {
+    public ClientDTO(Integer idClient) {
         this.idClient = idClient;
     }
 }

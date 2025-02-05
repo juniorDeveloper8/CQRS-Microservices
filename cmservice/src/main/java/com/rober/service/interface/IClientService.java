@@ -7,8 +7,8 @@ public interface IClientService {
 
     ClientDTO save(ClientDTO clientDTO);
 
-    ClientDTO update(String idClient, ClientDTO clientDTO);
+    ClientDTO update(Integer idClient, ClientDTO clientDTO);
 
-    String delete(String idClient);
+    String delete(Integer idClient);
 
 }

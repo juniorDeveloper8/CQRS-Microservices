@@ -13,12 +13,12 @@ public class AccountController {
     private AccountServiceImpl service;
 
     @PatchMapping("/{idAccount}")
-    public AccountDTO updateAccount(@PathVariable String idAccount, @RequestBody AccountDTO accountDTO) {
+    public AccountDTO updateAccount(@PathVariable Integer idAccount, @RequestBody AccountDTO accountDTO) {
         return service.update(idAccount, accountDTO);
     }
 
     @DeleteMapping("/{idAccount}")
-    public String deleteAccount(@PathVariable String idAccount) {
+    public String deleteAccount(@PathVariable Integer idAccount) {
         return service.delete(idAccount);
     }
 }

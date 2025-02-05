@@ -19,9 +19,9 @@ import java.util.UUID;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_account", unique = true, nullable = false, length = 200)
-    private String idAccount;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_account", unique = true, nullable = false)
+    private Integer idAccount;
 
     @ManyToOne
     @JoinColumn(name="id_client")

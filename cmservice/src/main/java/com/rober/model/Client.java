@@ -18,9 +18,9 @@ import java.util.UUID;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "id_client", unique = true, nullable = false, length = 200)
-    private String idClient;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_client", unique = true, nullable = false)
+    private Integer idClient;
     private String nombre;
     private String apellido;
 

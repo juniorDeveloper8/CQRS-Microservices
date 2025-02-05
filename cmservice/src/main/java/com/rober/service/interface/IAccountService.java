@@ -5,8 +5,8 @@ import com.rober.dto.AccountDTO;
 
 public interface IAccountService {
 
-    AccountDTO update(String idAccount, AccountDTO accountDTO);
+    AccountDTO update(Integer idAccount, AccountDTO accountDTO);
 
-    String delete(String idAccount);
+    String delete(Integer idAccount);
 
 }
