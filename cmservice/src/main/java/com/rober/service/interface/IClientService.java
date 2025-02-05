@@ -9,6 +9,4 @@ public interface IClientService {
 
     ClientDTO update(Integer idClient, ClientDTO clientDTO);
 
-    String delete(Integer idClient);
-
 }

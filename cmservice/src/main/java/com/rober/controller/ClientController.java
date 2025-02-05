@@ -22,8 +22,4 @@ public class ClientController {
         return service.update(idClient, clientDTO);
     }
 
-    @DeleteMapping("/{idClient}")
-    public String deleteClient(@PathVariable Integer idClient) {
-        return service.delete(idClient);
-    }
 }
