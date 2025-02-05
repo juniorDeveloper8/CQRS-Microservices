@@ -15,6 +15,8 @@ import java.util.Date;
 public class Client {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_client", unique = true, nullable = false)
     private Integer idClient;
     private String nombre;
     private String apellido;
