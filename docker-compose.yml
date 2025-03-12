@@ -1,6 +1,91 @@
 version: "3.9"
 
 services:
+  # Zookeeper for Kafka
+  zookeeper:
+    image: wurstmeister/zookeeper:latest
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks:
+      - spring-network
+
+  # Kafka Service
+  kafka:
+    image: wurstmeister/kafka:latest
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE_KAFKA://kafka:9093,OUTSIDE_KAFKA://localhost:9092
+      KAFKA_LISTENERS: INSIDE_KAFKA://0.0.0.0:9093,OUTSIDE_KAFKA://0.0.0.0:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE_KAFKA:PLAINTEXT,OUTSIDE_KAFKA:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE_KAFKA
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    networks:
+      - spring-network
+    depends_on:
+      - zookeeper
+
+  # MySQL Database
+  mysql:
+    image: mysql:8
+    container_name: Base
+    environment:
+      MYSQL_ROOT_PASSWORD: roberth456
+      MYSQL_DATABASE: DB_CmService
+      MYSQL_USER: hack4you
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    networks:
+      - spring-network
+    volumes:
+      - mysql-volume:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+    depends_on:
+      - zookeeper
+      - kafka
+
+  # Eureka Service
+  eureka:
+    build:
+      context: ./Eureka
+      dockerfile: Dockerfile
+    networks:
+      - spring-network
+    depends_on:
+      - kafka
+      - mysql
+
+  # CmService Service
+  cmservice:
+    build:
+      context: ./cmservice
+      dockerfile: Dockerfile
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DB_CmService?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: hack4you
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
+
+  # QryService Service
+  qryservice:
+    build:
+      context: ./qryservice
+      dockerfile: Dockerfile
+    networks:
+      - spring-network
+    depends_on:
+      - mysql
+      - kafka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/DB_QryService?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: hack4you
+      SPRING_DATASOURCE_PASSWORD: 123456
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
+
   # API Gateway Service
   apigateway:
     build:
@@ -16,72 +101,6 @@ services:
       - qryservice
       - kafka
       - mysql
-
-  # Eureka Service
-  eureka:
-    build:
-      context: ./Eureka
-      dockerfile: Dockerfile
-    networks:
-      - spring-network
-    depends_on:
-      - mysql
-
-  # CmService Service
-  cmservice:
-    build:
-      context: ./cmservice
-      dockerfile: Dockerfile
-    networks:
-      - spring-network
-    depends_on:
-      - mysql
-      - kafka
-
-  # QryService Service
-  qryservice:
-    build:
-      context: ./qryservice
-      dockerfile: Dockerfile
-    networks:
-      - spring-network
-    depends_on:
-      - mysql
-      - kafka
-
-  # MySQL Database
-  mysql:
-    image: mysql:8
-    environment:
-      MYSQL_ROOT_PASSWORD: roberth456
-      MYSQL_DATABASE: PayBank
-      MYSQL_USER: hack4you
-      MYSQL_PASSWORD: 123456
-    networks:
-      - spring-network
-    volumes:
-      - mysql-volume:/var/lib/mysql
-
-  # Kafka Service
-  kafka:
-    image: wurstmeister/kafka:latest
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE_KAFKA://kafka:9093,OUTSIDE_KAFKA://localhost:9092
-      KAFKA_LISTENERS: INSIDE_KAFKA://0.0.0.0:9093,OUTSIDE_KAFKA://0.0.0.0:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    networks:
-      - spring-network
-    depends_on:
-      - zookeeper
-
-  # Zookeeper for Kafka
-  zookeeper:
-    image: wurstmeister/zookeeper:latest
-    environment:
-      ZOOKEEPER_CLIENT_PORT: 2181
-    networks:
-      - spring-network
 
 networks:
   spring-network:
