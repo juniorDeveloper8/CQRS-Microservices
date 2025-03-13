@@ -48,6 +48,8 @@ services:
     build:
       context: ./Eureka
       dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
     networks:
       - spring-network
     depends_on:
@@ -69,6 +71,7 @@ services:
       SPRING_DATASOURCE_USERNAME: hack4you
       SPRING_DATASOURCE_PASSWORD: 123456
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka/
 
   # QryService Service
   qryservice:
@@ -85,6 +88,7 @@ services:
       SPRING_DATASOURCE_USERNAME: hack4you
       SPRING_DATASOURCE_PASSWORD: 123456
       SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka/
 
   # API Gateway Service
   apigateway:
@@ -101,6 +105,8 @@ services:
       - qryservice
       - kafka
       - mysql
+    environment:
+      eureka.client.service-url.defaultZone: http://eureka:8761/eureka/
 
 networks:
   spring-network:
